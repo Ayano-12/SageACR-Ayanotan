@@ -14,13 +14,18 @@ using Ayanotan.Sage.Triggers;
 using ImGuiNET;
 using Ayanotan.Sage.HotKey;
 using Ayanotan.Sage.SloResolvers;
+using Ayanotan.Sage.Himitu;
 using static Ayanotan.Sage.HotKey.给血量最低的单盾;
 using AEAssist.GUI;
+using Dalamud.Game;
+using Dalamud.Plugin.Services;
+using Dalamud.Plugin;
 
 namespace Ayanotan.Sage;
 
 
 // 重要 类一定要Public声明才会被查找到
+
 public class SageRotationEntry:IRotationEntry
 {
     public string AuthorName { get; set; } = "Ayanotan";
@@ -204,10 +209,9 @@ public class SageRotationEntry:IRotationEntry
     {
         SageSettingUI.Instance.Draw();
     }
-
     public void OnUIUpdate()
     {
-       
+         
     }
 
     public void DrawQtGeneral(JobViewWindow jobViewWindow)
@@ -216,6 +220,9 @@ public class SageRotationEntry:IRotationEntry
         //if (ImGui.Checkbox("能力技只奶T", ref SageSettings.Instance.OnlyTank)) ;
         if (ImGui.Checkbox("发炎用于Boss走位", ref SageSettings.Instance.发炎走位)) ;
         ImGuiHelper.LeftInputInt("保留蛇刺数量（AOE时，可填0~3）", ref SageSettings.Instance.保留蛇刺数量);
+        //if (ImGui.Checkbox("移动速度", ref SageSettings.Instance.移动速度开关)) ;
+        //ImGuiHelper.LeftInputFloat("移动速度", ref SageSettings.Instance.移动速度);
+
 
     }
 

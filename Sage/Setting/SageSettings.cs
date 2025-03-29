@@ -69,6 +69,8 @@ public class SageSettings
     public float 寄生清汁抬血阈值 = 0.75f;
     public float 单GCD抬血阈值 = 0.72f;
     public float 群GCD抬血阈值 = 0.65f;
+    public float 移动速度 = 1.00f;
+    public bool 移动速度开关;
     public int time = 1500;
     public int opener = 0;
     public int Esuna = 2;
