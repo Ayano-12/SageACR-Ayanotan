@@ -142,7 +142,9 @@ public class SlotResolver_GCD_AOE : ISlotResolver
             else if (SpellExtension.IsUnlock(SageSpell.箭毒) && Core.Resolve<JobApi_Sage>().Addersting > 保留蛇刺数量_forReal && TargetHelper.GetNearbyEnemyCount(target_for箭毒, 25, 5) >= aoeCount_build_失衡)
                 slot.Add(new Spell(SageSpell.箭毒, target_for箭毒));
             //检查失衡是否解锁以及失衡覆盖人数
-            else if(Core.Me.Level >= 46 && aoeCount_build_失衡 >= 2)
+            else if((Core.Me.Level >= 46 && Core.Me.Level < 82) && aoeCount_build_失衡 >= 2)
+                slot.Add(SpellsDefineAlternative.Dyskrasia.GetSpell());
+            else if (Core.Me.Level >= 82  && aoeCount_build_失衡 >= 3)
                 slot.Add(SpellsDefineAlternative.Dyskrasia.GetSpell());
             //没解锁就打注药
             else slot.Add(SageSpell.注药.GetSpell());
