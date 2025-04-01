@@ -220,7 +220,9 @@ public class SageRotationEntry:IRotationEntry
         //if (ImGui.Checkbox("能力技只奶T", ref SageSettings.Instance.OnlyTank)) ;
         if (ImGui.Checkbox("发炎用于Boss走位", ref SageSettings.Instance.发炎走位)) ;
         ImGuiHelper.LeftInputInt("保留蛇刺数量（AOE时，可填0~3）", ref SageSettings.Instance.保留蛇刺数量);
-        //if (ImGui.Checkbox("移动速度", ref SageSettings.Instance.移动速度开关)) ;
+        if (ImGui.CollapsingHeader("我超！外挂！（关闭本ACR后仍会生效）", (ImGuiTreeNodeFlags)32))
+            this.RenderHackSettings();
+
         //ImGuiHelper.LeftInputFloat("移动速度", ref SageSettings.Instance.移动速度);
 
 
@@ -244,7 +246,40 @@ public class SageRotationEntry:IRotationEntry
 
 
     }
+    private void RenderToggle(string label, ref bool setting, string tooltip)
+    {
+        ImGuiHelper.ToggleButton(label, ref setting);
+        ImGuiHelper.SetHoverTooltip(tooltip);
+    }
+    private void RenderHackSettings()
+    {
+        if (SageSettings.Instance == null)
+            return;
+        SageSettings instance = SageSettings.Instance;
 
+        bool noActionMove = instance.NoActionMove;
+        this.RenderToggle("突进不位移", ref instance.NoActionMove, "突进不位移");
+        if (instance.NoActionMove != noActionMove)
+            Sage.Helpers.NoActionMove();
+
+        bool actionRange = instance.ActionRange;
+        this.RenderToggle("长臂猿", ref instance.ActionRange, "技能距离增加3米");
+        if (instance.ActionRange != actionRange)
+            Sage.Helpers.ActionRange();
+
+        bool speedUP = instance.SpeedUP;
+        float 加速量 = instance.加速量;
+        this.RenderToggle("移速加快", ref instance.SpeedUP, "移速加百分之15");
+        ImGuiHelper.LeftInputFloat("加速量（0~1，默认为0.2）", ref instance.加速量, 0, 1);
+        if (instance.SpeedUP != speedUP || instance.加速量 != 加速量)
+            Sage.Helpers.SpeedUP();
+
+        //bool skillPostActionMove = instance.SkillPostActionMove;
+        //this.RenderToggle("后摇可移动", ref instance.SkillPostActionMove, "所有技能后摇时可以移动");
+        //if (instance.SkillPostActionMove == skillPostActionMove)
+        //    return;
+        //Sage.Helpers.SkillPostActionMove();
+    }
 
     public void Dispose()
     {

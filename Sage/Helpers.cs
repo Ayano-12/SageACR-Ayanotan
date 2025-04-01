@@ -7,12 +7,14 @@ using AEAssist.Extension;
 using AEAssist.Helper;
 using AEAssist.JobApi;
 using AEAssist.MemoryApi;
+using Ayanotan.WhiteMage.Setting;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Statuses;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using static Ayanotan.Sage.Himitu.HackingXIV;
 
 
 namespace Ayanotan.Sage;
@@ -246,6 +248,70 @@ public static class Helpers
             return false;
         }
     }
+    public static void ActionRange()
+    {
+        if (SageSettings.Instance != null && SageSettings.Instance.ActionRange)
+            Hook.EnablePatch(PatchType.ActionRange);
+        else
+            Hook.DisablePatch(PatchType.ActionRange);
+    }
+
+    public static void NoActionMove()
+    {
+        if (SageSettings.Instance != null && SageSettings.Instance.NoActionMove)
+            Hook.EnablePatch(PatchType.NoActionMove);
+        else
+            Hook.DisablePatch(PatchType.NoActionMove);
+    }
+
+    public static void SkillPostActionMove()
+    {
+        if (SageSettings.Instance != null && SageSettings.Instance.SkillPostActionMove)
+            Hook.EnablePatch(PatchType.SkillPostActionMove);
+        else
+            Hook.DisablePatch(PatchType.SkillPostActionMove);
+    }
+    public static void SpeedUP()
+    {
+        if (SageSettings.Instance != null && SageSettings.Instance.SpeedUP)
+        {
+            Hook.EnablePatch(PatchType.SpeedUP);
+            LogHelper.Print("加速功能" + "已开启，当前速度:" + (SageSettings.Instance.加速量+1));
+        }
+
+        else
+        {
+            Hook.DisablePatch(PatchType.SpeedUP);
+        }
+            
+    }
+    public static void Hack()
+    {
+        Ayanotan.Sage.Helpers.SkillPostActionMove();
+        Ayanotan.Sage.Helpers.NoActionMove();
+        Ayanotan.Sage.Helpers.ActionRange();
+        Ayanotan.Sage.Helpers.SpeedUP();
+    }
+    public static void UpdateHack()
+    {
+        if (SageSettings.Instance == null)
+            return;
+        SageSettings instance = SageSettings.Instance;
+        bool noActionMove = instance.NoActionMove;
+        bool actionRange = instance.ActionRange;
+        bool skillPostActionMove = instance.SkillPostActionMove;
+        bool speedUP = instance.SpeedUP;
+        if (instance.NoActionMove != noActionMove)
+            Ayanotan.Sage.Helpers.NoActionMove();
+        if (instance.ActionRange != actionRange)
+            Ayanotan.Sage.Helpers.ActionRange();
+        if (instance.SpeedUP != speedUP)
+            Ayanotan.Sage.Helpers.SpeedUP();
+        if (instance.SkillPostActionMove == skillPostActionMove)
+            return;
+        Ayanotan.Sage.Helpers.SkillPostActionMove();
+    }
+
 
 
     public static class Map
