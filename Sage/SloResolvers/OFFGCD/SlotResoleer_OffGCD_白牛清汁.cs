@@ -36,11 +36,10 @@ public class SlotResoleer_OffGCD_白牛清汁 : ISlotResolver
             return -5;
         if (Core.Resolve<JobApi_Sage>().Addersgall < 1)
             return -4;
-        if (Helpers.二十五米视线内血量低于设定的队员数量(SageSettings.Instance.寄生清汁抬血阈值) >= 2 && SageSpell.寄生清汁.GetSpell().IsReadyWithCanCast())
+        if (Helpers.十五米视线内血量低于设定的队员数量(SageSettings.Instance.寄生清汁抬血阈值) >= 2 && SageSpell.寄生清汁.GetSpell().IsReadyWithCanCast())
             return -7;
         if (SageSpell.寄生清汁.RecentlyUsed(1000))
             return -6;
-
         //检查是否有满足条件的目标
         if (target == null)
             return -2;

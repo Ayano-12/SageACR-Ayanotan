@@ -44,6 +44,8 @@ public class Slot_Raise : ISlotSequence
 
         if (!Core.Resolve<MemApiSpell>().CheckActionInRangeOrLoS(24287, (IGameObject)killTarget))
             return -17;
+        if (!Helpers.IsTargetVisibleOrInRange(24287, killTarget))
+            return -18;
         //var killTarget = PartyHelper.DeadAllies.FirstOrDefault(r => !r.HasAura(SageSpell.复苏));
         if (killTarget == null || !killTarget.IsValid())
             return -1;

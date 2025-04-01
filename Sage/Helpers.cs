@@ -10,6 +10,9 @@ using AEAssist.MemoryApi;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Game.ClientState.Statuses;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs;
+using FFXIVClientStructs.FFXIV.Client.Game;
 
 
 namespace Ayanotan.Sage;
@@ -224,6 +227,24 @@ public static class Helpers
 
         return currentTarget;
 
+    }
+
+    public static bool IsTargetVisibleOrInRange(uint actionId, IBattleChara? target)
+    {
+        unsafe
+        {
+            if(Core.Me != null && target != null && target.IsTargetable)
+            {
+                var skilltarget = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)target.Address;
+                var me = (FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject*)Core.Me.Address;
+                if (ActionManager.GetActionInRangeOrLoS == null)
+                {
+                    return false;
+                }
+                return ActionManager.GetActionInRangeOrLoS(actionId, me, skilltarget) is not (566 or 562);
+            }
+            return false;
+        }
     }
 
 

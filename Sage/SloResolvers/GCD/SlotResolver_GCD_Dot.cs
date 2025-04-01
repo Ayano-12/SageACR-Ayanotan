@@ -21,9 +21,6 @@ namespace Ayanotan.Sage.SloResolvers.GCD;
 
 public class SlotResolver_GCD_Dot : ISlotResolver
 {
-    Spell spell_均衡注药 = new Spell(SageSpell.均衡注药, Core.Me.GetCurrTarget());
-    Spell spell_均衡注药II = new Spell(SageSpell.均衡注药II, Core.Me.GetCurrTarget());
-    Spell spell_均衡注药III = new Spell(SageSpell.均衡注药III, Core.Me.GetCurrTarget());
     Spell spell_均衡失衡 = new Spell(SageSpell.均衡失衡, SpellTargetType.Self);
     public static bool IsBoss(IBattleChara target)
     {
@@ -37,7 +34,11 @@ public class SlotResolver_GCD_Dot : ISlotResolver
         }
         return false;
     }
-   
+    public Spell GetSpell()
+    {
+        return SageRotationEntry.QT.GetQt(QTKey.Dot) && TargetHelper.GetNearbyEnemyCount((IBattleChara)Core.Me, 0, 5) >= 2 && ((ICharacter)Core.Me).Level >= (byte)82 ? Core.Resolve<MemApiSpell>().CheckActionChange(37032U).GetSpell() : Core.Resolve<MemApiSpell>().CheckActionChange(24283U).GetSpell();
+    }
+
     // 返回>=0表示检测通过 即将调用Build方法
     public int Check()
     {
@@ -92,20 +93,31 @@ public class SlotResolver_GCD_Dot : ISlotResolver
         //else if (SpellExtension.IsReadyWithCanCast(spell_均衡注药II))
         //    slot.Add(SageSpell.均衡注药II.GetSpell());
         //else slot.Add(SageSpell.均衡注药.GetSpell());
-        if (!Core.Resolve<JobApi_Sage>().Eukrasia)
-        {
-            slot.Add(SageSpell.均衡.GetSpell());
-        }
-        else
-        {
-            if (aoeCount > 2 && SpellExtension.IsReadyWithCanCast(spell_均衡失衡))
-                slot.Add(SageSpell.均衡失衡.GetSpell());
-            else if (Core.Me.Level >= 82)
-                slot.Add(SageSpell.均衡注药III.GetSpell());
-            else if (Core.Me.Level >= 72)
-                slot.Add(SageSpell.均衡注药II.GetSpell());
-            else slot.Add(SageSpell.均衡注药.GetSpell());
-        }
+
+
+       
+            Spell spell = this.GetSpell();
+            if (spell == null)
+                return;
+            if (!Core.Resolve<JobApi_Sage>().Eukrasia)
+                slot.Add(24290U.GetSpell());
+            slot.Add(spell);
+        
+
+        //if (!Core.Resolve<JobApi_Sage>().Eukrasia)
+        //{
+        //    slot.Add(SageSpell.均衡.GetSpell());
+        //}
+        //else
+        //{
+        //    if (aoeCount > 2 && SpellExtension.IsReadyWithCanCast(spell_均衡失衡))
+        //        slot.Add(SageSpell.均衡失衡.GetSpell());
+        //    else if (Core.Me.Level >= 82)
+        //        slot.Add(SageSpell.均衡注药III.GetSpell());
+        //    else if (Core.Me.Level >= 72)
+        //        slot.Add(SageSpell.均衡注药II.GetSpell());
+        //    else slot.Add(SageSpell.均衡注药.GetSpell());
+        //}
     }
 }
 

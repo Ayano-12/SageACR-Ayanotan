@@ -15,6 +15,8 @@ using AEAssist.CombatRoutine.Module.AILoop;
 using AEAssist.JobApi;
 using Ayanotan.Sage.Data;
 using Dalamud.Game.ClientState.Objects.Types;
+using Ayanotan.WhiteMage.Data;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.ActionEffectHandler;
 
 
 
@@ -110,6 +112,53 @@ public class SageRotationEventHandler:IRotationEventHandler
     {
 
     }
+    public void BeforeSpell(Slot slot, Spell spell)
+    {
+        switch (spell.Id)
+        {
+            case SageSpell.复苏:
+                if (!Core.Me.HasAura(whmData.Swiftcast))
+                {
+                    var actionsToRemove = new List<SlotAction>();
+                    foreach (var action in slot.Actions)
+                    {
+                        if (action.Spell.Id == SageSpell.复苏)
+                        {
+                            actionsToRemove.Add(action);
+                        }
+                    }
+                    foreach (var action in actionsToRemove)
+                    {
+                        slot.Actions.Remove(action);
+                    }
+                }
+                break;
+            case whmData.Swiftcast:
+                var target = (from r in PartyHelper.DeadAllies
+                              where !r.HasAura(148u) && Helpers.目标是否可见或在技能范围内(24287)
+                              select r).FirstOrDefault();
+                if (target == null || !target.IsValid() || !target.IsTargetable || target.Distance(Core.Me) > 30 ||
+                     (Core.Me.Position.Y - target.Position.Y > 1 && Helpers.副本人数() > 4) ||
+                    !new Spell(SageSpell.复苏, target).IsReadyWithCanCast())
+                {
+                    var actionsToRemove = new List<SlotAction>();
+                    foreach (var action in slot.Actions)
+                    {
+                        if (action.Spell.Id is SageSpell.复苏 or whmData.Swiftcast)
+                        {
+                            actionsToRemove.Add(action);
+                        }
+                    }
+                    foreach (var action in actionsToRemove)
+                    {
+                        slot.Actions.Remove(action);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
     public void AfterSpell(Slot slot, Spell spell)
     {
@@ -123,7 +172,7 @@ public class SageRotationEventHandler:IRotationEventHandler
     
     public void OnEnterRotation()
     {
-        Core.Resolve<MemApiChatMessage>().Toast2("Ciallo～(∠・ω< )⌒☆"+"\n欢迎使用Ayanotan的贤者日随ACR喵~当前版本v25.4.1", 300, 6000);
+        Core.Resolve<MemApiChatMessage>().Toast2("Ciallo～(∠・ω< )⌒☆"+"\n欢迎使用Ayanotan的贤者日随ACR喵~当前版本v25.5.16", 300, 6000);
         LogHelper.Print("欢迎使用Ayanotan的贤者日随ACR喵~发现问题还请随时到DC反馈");
         LogHelper.Print("请不要开启GCD偏移或长臂猿等，可能会造成意料之外的卡手");
 
