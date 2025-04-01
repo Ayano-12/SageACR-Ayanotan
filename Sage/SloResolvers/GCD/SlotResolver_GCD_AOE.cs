@@ -96,7 +96,18 @@ public class SlotResolver_GCD_AOE : ISlotResolver
         //检测失衡是否解锁
         if (!SpellExtension.IsReadyWithCanCast(spell_失衡) && !SpellExtension.IsReadyWithCanCast(spell_失衡II))
             return -5;
-        if (Core.Me.IsMoving() && !(SageRotationEntry.QT.GetQt(QTKey.发炎) && aoeCount_check_6 >= 3 && (SageSpell.发炎III.IsReady() || SageSpell.发炎II.IsReady() || SageSpell.发炎.IsReady()) || (aoeCount_check_6 < 3 && Core.Resolve<MemApiSpell>().CheckActionChange(SageSpell.发炎).GetSpell().Charges > 1.9) && target_for发炎 != null && target_for发炎.DistanceToPlayer() <= 6.5) && !(SpellExtension.IsUnlock(SageSpell.箭毒) && Core.Resolve<JobApi_Sage>().Addersting > 保留蛇刺数量_forReal && TargetHelper.GetNearbyEnemyCount(target_for箭毒, 25, 5) >= aoeCount_check)&& !(Core.Me.Level >= 46 && aoeCount_check >= 2))
+        //移动中不打aoe or 打不了aoe时，不打注药，避免鬼畜走不动
+        if (Core.Me.IsMoving() && 
+            !(SageRotationEntry.QT.GetQt(QTKey.发炎) && 
+            aoeCount_check_6 >= 3 && 
+            (SageSpell.发炎III.IsReady() || SageSpell.发炎II.IsReady() || SageSpell.发炎.IsReady()) ||
+            (aoeCount_check_6 < 3 && Core.Resolve<MemApiSpell>().CheckActionChange(SageSpell.发炎).GetSpell().Charges > 1.9) && 
+            target_for发炎 != null && target_for发炎.DistanceToPlayer() <= 6.5) && 
+            !(SpellExtension.IsUnlock(SageSpell.箭毒) && 
+            Core.Resolve<JobApi_Sage>().Addersting > 保留蛇刺数量_forReal && 
+            TargetHelper.GetNearbyEnemyCount(target_for箭毒, 25, 5) >= aoeCount_check) && 
+            !((Core.Me.Level >= 46 && Core.Me.Level < 82) && aoeCount_check >= 2) && 
+            !(Core.Me.Level >= 82 && aoeCount_check >= 3))
             return -6;
         if (Helpers.TargetHasAura(Core.Me.GetCurrTarget(), SageData.Enemyinvulnerability))
             return -2;
@@ -134,7 +145,11 @@ public class SlotResolver_GCD_AOE : ISlotResolver
             var aoeCount_build_失衡 = TargetHelper.GetNearbyEnemyCount(5);
             var aoeCount_build_发炎 = TargetHelper.GetNearbyEnemyCount(6);
             //如果人数大于等于三直接打发炎，如果少于三但发炎充能满了也打出去防止空转
-            if (SageRotationEntry.QT.GetQt(QTKey.发炎) && aoeCount_build_发炎 >= 3 && (SageSpell.发炎III.IsReady()|| SageSpell.发炎II.IsReady()||SageSpell.发炎.IsReady()) || (aoeCount_build_发炎 < 3 && Core.Resolve<MemApiSpell>().CheckActionChange(SageSpell.发炎).GetSpell().Charges >1.9) && target_for发炎 != null && target_for发炎.DistanceToPlayer() <= 6.5 )
+            if (SageRotationEntry.QT.GetQt(QTKey.发炎) && 
+                aoeCount_build_发炎 >= 3 && 
+                (SageSpell.发炎III.IsReady()|| SageSpell.发炎II.IsReady()||SageSpell.发炎.IsReady()) ||
+                (aoeCount_build_发炎 < 3 && Core.Resolve<MemApiSpell>().CheckActionChange(SageSpell.发炎).GetSpell().Charges >1.9) && 
+                target_for发炎 != null && target_for发炎.DistanceToPlayer() <= 6.5 )
             {
                 slot.Add(new Spell(SageSpell.发炎, target_for发炎));
             }

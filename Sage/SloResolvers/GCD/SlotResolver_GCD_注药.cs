@@ -54,7 +54,15 @@ public class SlotResolver_GCD_注药 : ISlotResolver
             return -7;
         if (Core.Me.IsMoving() && GCDHelper.GetGCDDuration() > 50)
             return -9;
-        if (Core.Me.IsMoving() && !(Core.Resolve<JobApi_Sage>().Addersting > 0 && GCDHelper.GetGCDDuration() <= 50 && SpellExtension.IsUnlock(SageSpell.箭毒)) && !(GCDHelper.GetGCDDuration() <= 50 && Core.Resolve<MemApiSpell>().CheckActionChange(SageSpell.发炎).GetSpell().Charges >= 1 && SageSettings.Instance.发炎走位 && IsBoss(Core.Me.GetCurrTarget()) && SageRotationEntry.QT.GetQt(QTKey.发炎) && GameObjectExtension.Distance((IGameObject)Core.Me, (IGameObject)GameObjectExtension.GetCurrTarget((IBattleChara)Core.Me), (DistanceMode)7) <= 6.0f))
+        if (Core.Me.IsMoving() && 
+            !(Core.Resolve<JobApi_Sage>().Addersting > 0 && 
+            GCDHelper.GetGCDDuration() <= 50 && 
+            SpellExtension.IsUnlock(SageSpell.箭毒)) && 
+            !(GCDHelper.GetGCDDuration() <= 50 && 
+            Core.Resolve<MemApiSpell>().CheckActionChange(SageSpell.发炎).GetSpell().Charges >= 1 && 
+            SageSettings.Instance.发炎走位 && 
+            IsBoss(Core.Me.GetCurrTarget()) && SageRotationEntry.QT.GetQt(QTKey.发炎) && 
+            GameObjectExtension.Distance((IGameObject)Core.Me, (IGameObject)GameObjectExtension.GetCurrTarget((IBattleChara)Core.Me), (DistanceMode)7) <= 6.0f))
             return -11;
         //没有DOT不打注药，但怪物少于2且血量少于30%时DOT不会续，此时AOE也不会打，为防止停手，将前述条件非化后与原条件串行判断）
         if ( !(aoeCount <= 2 || Core.Me.GetCurrTarget().CurrentHpPercent() <= 0.3f ) && 

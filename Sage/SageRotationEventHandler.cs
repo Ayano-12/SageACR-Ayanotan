@@ -123,7 +123,7 @@ public class SageRotationEventHandler:IRotationEventHandler
     
     public void OnEnterRotation()
     {
-        Core.Resolve<MemApiChatMessage>().Toast2("Ciallo～(∠・ω< )⌒☆"+"\n欢迎使用Ayanotan的贤者日随ACR喵~当前版本v25.3.31", 300, 6000);
+        Core.Resolve<MemApiChatMessage>().Toast2("Ciallo～(∠・ω< )⌒☆"+"\n欢迎使用Ayanotan的贤者日随ACR喵~当前版本v25.4.1", 300, 6000);
         LogHelper.Print("欢迎使用Ayanotan的贤者日随ACR喵~发现问题还请随时到DC反馈");
         LogHelper.Print("请不要开启GCD偏移或长臂猿等，可能会造成意料之外的卡手");
 
