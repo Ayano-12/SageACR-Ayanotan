@@ -1,1 +1,2 @@
-FF14-贤者日随ACR-By Ayano
+FF14 贤者日随ACR via AEAssist
+By Ayano
