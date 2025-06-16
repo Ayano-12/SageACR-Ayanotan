@@ -68,10 +68,10 @@ public class SageSettingUI
             return;
         SageSettings instance = SageSettings.Instance;
 
-        bool noActionMove = instance.NoActionMove;
-        this.RenderToggle("突进不位移", ref instance.NoActionMove, "突进不位移");
-        if (instance.NoActionMove != noActionMove)
-            Sage.Helpers.NoActionMove();
+        bool movePermission = instance.MovePermission;
+        this.RenderToggle("强制移动", ref instance.MovePermission, "免除控制");
+        if (instance.MovePermission != movePermission)
+            Sage.Helpers.MovePermission();
 
         bool actionRange = instance.ActionRange;
         this.RenderToggle("长臂猿", ref instance.ActionRange, "技能距离增加3米");

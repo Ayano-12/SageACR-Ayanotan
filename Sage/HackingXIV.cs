@@ -17,11 +17,11 @@ using Ayanotan.WhiteMage.Setting;
 
 namespace Ayanotan.Sage.Himitu
 {
-    internal static class HackingXIV  //感谢贾老板的代码
+    internal static class HackingXIV  //感谢贾老板和棍哥的代码
     {
         internal enum PatchType
         {
-            NoActionMove,
+            MovePermission,
             SkillPostActionMove,
             ActionRange,
             SpeedUP
@@ -30,8 +30,8 @@ namespace Ayanotan.Sage.Himitu
         internal static class Hook
         {
             private static readonly Dictionary<PatchType, IDisposable> _activeHooks = new Dictionary<PatchType, IDisposable>();
-            private static Hook<Hook.NoActionMoveDelegate>? _noActionMoveHook;
-            private static readonly Hook.NoActionMoveDelegate _noActionMoveDetour = new Hook.NoActionMoveDelegate(Hook.NoActionMoveDetour);
+            private static Hook<Hook.MovePermissionDelegate>? _movePermissionHook;
+            private static readonly Hook.MovePermissionDelegate _movePermissionDetour = new Hook.MovePermissionDelegate(Hook.MovePermissionDetour);
             private static Hook<Hook.SkillPostActionMoveDelegate>? _skillPostActionMoveHook;
             private static readonly Hook.SkillPostActionMoveDelegate _skillPostActionMoveDetour = new Hook.SkillPostActionMoveDelegate(Hook.SkillPostActionMoveDetour);
             private static Hook<Hook.ActionRangeDelegate>? _actionRangeHook;
@@ -45,8 +45,8 @@ namespace Ayanotan.Sage.Himitu
                     new Hook.PatchMeta("移动速度", "40 ?? 48 ?? ?? ?? 48 ?? ?? 48 ?? ?? ?? 48 ?? ?? ff 90 ?? ?? ?? ?? 48 ?? ?? 75 ?? f3 ?? ?? ?? ?? ?? ?? ??")
                 },
                 {
-                    PatchType.NoActionMove,
-                    new Hook.PatchMeta("突进无位移", "48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8B F1 0F 29 74 24 ?? 48 8B 89 ?? ?? ?? ?? 0F 28 F3")
+                    PatchType.MovePermission,
+                    new Hook.PatchMeta("强制移动", "e8 ?? ?? ?? ?? 84 ?? 74 ?? 48 c7 05")
                 },
                 {
                     PatchType.SkillPostActionMove,
@@ -89,10 +89,10 @@ namespace Ayanotan.Sage.Himitu
                         {
                             switch (patchType)
                             {
-                                case PatchType.NoActionMove:
-                                    Hook._noActionMoveHook = Hook.GameInteropProvider.HookFromAddress<Hook.NoActionMoveDelegate>(num, Hook._noActionMoveDetour, (IGameInteropProvider.HookBackend)0);
-                                    Hook._noActionMoveHook.Enable();
-                                    Hook._activeHooks[patchType] = (IDisposable)Hook._noActionMoveHook;
+                                case PatchType.MovePermission:
+                                    Hook._movePermissionHook = Hook.GameInteropProvider.HookFromAddress<Hook.MovePermissionDelegate>(num, Hook._movePermissionDetour, (IGameInteropProvider.HookBackend)0);
+                                    Hook._movePermissionHook.Enable();
+                                    Hook._activeHooks[patchType] = (IDisposable)Hook._movePermissionHook;
                                     break;
                                 case PatchType.SkillPostActionMove:
                                     Hook._skillPostActionMoveHook = Hook.GameInteropProvider.HookFromAddress<Hook.SkillPostActionMoveDelegate>(num, Hook._skillPostActionMoveDetour, (IGameInteropProvider.HookBackend)0);
@@ -133,8 +133,8 @@ namespace Ayanotan.Sage.Himitu
                     Hook._activeHooks.Remove(patchType);
                     switch (patchType)
                     {
-                        case PatchType.NoActionMove:
-                            Hook._noActionMoveHook = (Hook<Hook.NoActionMoveDelegate>)null;
+                        case PatchType.MovePermission:
+                            Hook._movePermissionHook = (Hook<Hook.MovePermissionDelegate>)null;
                             break;
                         case PatchType.SkillPostActionMove:
                             Hook._skillPostActionMoveHook = (Hook<Hook.SkillPostActionMoveDelegate>)null;
@@ -156,14 +156,19 @@ namespace Ayanotan.Sage.Himitu
                 }
             }
 
-            private static ulong NoActionMoveDetour(
-              ulong arg1,
-              byte arg2,
-              ulong arg3,
-              float arg4,
-              IntPtr arg5)
+            private static IntPtr MovePermissionDetour(
+              IntPtr arg1,
+              uint arg2,
+              int arg3,
+              int arg4)
             {
-                return 0;
+                var p_ids = Enumerable.Range(96, 4).Select(x => (uint)x)
+                .Concat(new uint[] { 0x3E9, 0x3EE, 0x3EF, 0x3F0 }).ToList();
+                if (p_ids.Contains(arg2))
+                {
+                    return 1;
+                }
+                return Hook._movePermissionHook.Original(arg1,arg2,arg3,arg4);
             }
 
             private static long SkillPostActionMoveDetour(long arg1) => arg1;
@@ -178,12 +183,11 @@ namespace Ayanotan.Sage.Himitu
                 return Hook._actionRangeHook.Original(actionId) + 3f;
             }
 
-            private delegate ulong NoActionMoveDelegate(
-              ulong arg1,
-              byte arg2,
-              ulong arg3,
-              float arg4,
-              IntPtr arg5);
+            private delegate IntPtr MovePermissionDelegate(
+              IntPtr arg1,
+              uint arg2,
+              int arg3,
+              int arg4);
 
             private delegate long SkillPostActionMoveDelegate(long arg1);
 

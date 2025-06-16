@@ -256,12 +256,12 @@ public static class Helpers
             Hook.DisablePatch(PatchType.ActionRange);
     }
 
-    public static void NoActionMove()
+    public static void MovePermission()
     {
-        if (SageSettings.Instance != null && SageSettings.Instance.NoActionMove)
-            Hook.EnablePatch(PatchType.NoActionMove);
+        if (SageSettings.Instance != null && SageSettings.Instance.MovePermission)
+            Hook.EnablePatch(PatchType.MovePermission);
         else
-            Hook.DisablePatch(PatchType.NoActionMove);
+            Hook.DisablePatch(PatchType.MovePermission);
     }
 
     public static void SkillPostActionMove()
@@ -288,7 +288,7 @@ public static class Helpers
     public static void Hack()
     {
         Ayanotan.Sage.Helpers.SkillPostActionMove();
-        Ayanotan.Sage.Helpers.NoActionMove();
+        Ayanotan.Sage.Helpers.MovePermission();
         Ayanotan.Sage.Helpers.ActionRange();
         Ayanotan.Sage.Helpers.SpeedUP();
     }
@@ -297,12 +297,12 @@ public static class Helpers
         if (SageSettings.Instance == null)
             return;
         SageSettings instance = SageSettings.Instance;
-        bool noActionMove = instance.NoActionMove;
+        bool movePermission = instance.MovePermission;
         bool actionRange = instance.ActionRange;
         bool skillPostActionMove = instance.SkillPostActionMove;
         bool speedUP = instance.SpeedUP;
-        if (instance.NoActionMove != noActionMove)
-            Ayanotan.Sage.Helpers.NoActionMove();
+        if (instance.MovePermission != movePermission)
+            Ayanotan.Sage.Helpers.MovePermission();
         if (instance.ActionRange != actionRange)
             Ayanotan.Sage.Helpers.ActionRange();
         if (instance.SpeedUP != speedUP)

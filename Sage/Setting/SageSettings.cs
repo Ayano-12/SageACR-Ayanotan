@@ -78,10 +78,10 @@ public class SageSettings
     public bool OnlyTank;
     public bool 发炎走位 = true ;
     public int 保留蛇刺数量 = 1;
-    public bool NoActionMove = false;
     public bool SkillPostActionMove = false;
     public bool ActionRange = false;
     public bool SpeedUP = false;
+    public bool MovePermission = false;
     public float 加速量 = 0.2f;
     public Dictionary<string, object> StyleSetting = new();
     public bool AutoReset = true;
